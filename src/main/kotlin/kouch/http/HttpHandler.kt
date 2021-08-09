@@ -2,12 +2,16 @@ package kouch.http
 
 import io.ktor.client.*
 import io.ktor.client.request.*
+import io.ktor.http.*
+import org.json.JSONObject
 
 interface HttpHandler {
     val client: HttpClient
     val host: String
     val port: Int
     val useHttps: Boolean
+    val databaseId: String
+    var token: String
 
     private val protocol
         get() = if (useHttps) "https" else "http"
