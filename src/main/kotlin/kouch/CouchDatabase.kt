@@ -1,0 +1,4 @@
+package kouch
+
+class CouchDatabase {
+}
