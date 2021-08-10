@@ -11,7 +11,7 @@ import java.util.*
 import kotlin.jvm.Throws
 import kotlin.reflect.KClass
 
-sealed class HttpResponse(
+class HttpResponse(
     private val bodyString: String,
     val responseData: HttpResponseData,
     private val parser: Moshi = Moshi
