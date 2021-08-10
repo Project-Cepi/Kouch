@@ -1,6 +1,7 @@
 package kouch.http
 
 import com.squareup.moshi.JsonAdapter
+import com.squareup.moshi.Moshi
 import io.ktor.client.request.*
 import kouch.Moshi
 import org.json.JSONException
@@ -10,22 +11,15 @@ import java.util.*
 import kotlin.jvm.Throws
 import kotlin.reflect.KClass
 
-sealed class HttpResponse(val bodyString: String, val responseData: HttpResponseData) {
-    fun toStringResponse() = StringResponse(bodyString, responseData)
+sealed class HttpResponse(
+    private val bodyString: String,
+    val responseData: HttpResponseData,
+    private val parser: Moshi = Moshi
+    ) {
+    private val rawJson = JSONObject(bodyString)
+    val ok = rawJson.getBoolean("ok")
 
-    @Throws(JSONException::class)
-    fun toJsonResponse() = JsonResponse(JSONObject(bodyString), responseData)
-
-    inline fun <reified T : Any> toObjectResponse(): HttpObjectResponse<T> {
-        return HttpObjectResponse(bodyString, T::class, responseData)
+    fun <T : Any> parse(klass: KClass<T>): T? {
+        return parser.adapter(klass.java).fromJson(bodyString)
     }
-}
-
-class StringResponse(val body: String, responseData: HttpResponseData) : HttpResponse(body, responseData)
-
-class JsonResponse(val body: JSONObject, responseData: HttpResponseData) : HttpResponse(body.toString(), responseData)
-
-class HttpObjectResponse<T: Any>(json: String, klass: KClass<T>, responseData: HttpResponseData)
-    : HttpResponse(json, responseData) {
-    val body = Moshi.adapter(klass.java).fromJson(json)
 }
