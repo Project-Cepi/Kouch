@@ -6,31 +6,16 @@ import io.ktor.http.*
 import org.json.JSONObject
 
 interface HttpHandler {
-    val client: HttpClient
-    val host: String
-    val port: Int
-    val useHttps: Boolean
-    val databaseId: String
-    var token: String
 
-    private val protocol
-        get() = if (useHttps) "https" else "http"
-    private val url
-        get() = "$protocol://$host:$port"
+    suspend fun get(route: String, builder: RequestBuilder = {}): HttpResponse
 
-    suspend fun get(route: String, builder: RequestBuilder = {}): HttpResponse {
-        val response = client.get<HttpResponseData>(url + route, builder)
-        return StringResponse(response.bodyString, response)
-    }
+    suspend fun post(route: String, builder: RequestBuilder = {}): HttpResponse
 
-    suspend fun post(route: String, builder: RequestBuilder = {}): HttpResponse {
-        val response = client.post<HttpResponseData>(url + route, builder)
-        return StringResponse(response.bodyString, response)
-    }
+    suspend fun delete(route: String, builder: RequestBuilder = {}): HttpResponse
 
-    private val HttpResponseData.bodyString
-        get() = this.body.toString()
+    suspend fun put(route: String, builder: RequestBuilder = {}): HttpResponse
 
+    suspend fun authenticate(username: String, password: String): AuthToken
 }
 
 private typealias RequestBuilder = HttpRequestBuilder.() -> Unit
