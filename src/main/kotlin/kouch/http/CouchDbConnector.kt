@@ -8,7 +8,7 @@ import io.ktor.client.request.*
 import io.ktor.http.*
 import kouch.Moshi
 import kouch.annotations.KouchDsl
-import kouch.http.auth.HttpAuthenticationException
+import kouch.http.exceptions.HttpAuthenticationException
 import org.json.JSONObject
 import kotlin.jvm.Throws
 
