@@ -7,6 +7,7 @@ import io.ktor.client.features.cookies.*
 import io.ktor.client.request.*
 import io.ktor.http.*
 import kouch.Moshi
+import kouch.annotations.KouchDsl
 import kouch.http.auth.AuthToken
 import kouch.http.auth.HttpAuthenticationException
 import org.json.JSONObject
@@ -70,6 +71,23 @@ class CouchDbConnector(
             if (it.responseData.statusCode == HttpStatusCode.Unauthorized)
                 throw HttpAuthenticationException("Invalid username or password!")
             else it
+        }
+    }
+
+    @KouchDsl
+    class Builder {
+        var database: String? = null
+        var host: String? = null
+        var port: Int = 5984
+        var useHttps = true
+        var useHttp2 = true
+        var followRedirects = true
+        var moshi = Moshi
+
+        fun build(): CouchDbConnector {
+            val database = requireNotNull(this.database)
+            val host = requireNotNull(host)
+            return CouchDbConnector(database, host, port, useHttps, useHttp2, followRedirects, moshi)
         }
     }
 }
