@@ -16,7 +16,7 @@ interface HttpHandler {
 
     suspend fun put(route: String, payload: JSONObject, builder: RequestBuilder = {}): HttpResponse
 
-    suspend fun authenticate(username: String, password: String): AuthToken
+    suspend fun authenticate(username: String, password: String): HttpResponse
 }
 
 typealias RequestBuilder = HttpRequestBuilder.() -> Unit
