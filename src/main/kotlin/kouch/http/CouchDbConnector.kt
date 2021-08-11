@@ -9,6 +9,7 @@ import io.ktor.http.*
 import kouch.Moshi
 import kouch.annotations.KouchDsl
 import kouch.http.exceptions.HttpAuthenticationException
+import kouch.http.exceptions.HttpStatusException
 import org.json.JSONObject
 import kotlin.jvm.Throws
 
@@ -76,6 +77,12 @@ class CouchDbConnector(
             if (it.responseData.statusCode == HttpStatusCode.Unauthorized)
                 throw HttpAuthenticationException("Invalid username or password!")
             else it
+        }
+    }
+
+    fun checkStatus(response: HttpResponse, vararg expected: HttpStatusCode) {
+        response.responseData.statusCode.let {
+            if (!expected.contains(it)) throw HttpStatusException(it)
         }
     }
 
