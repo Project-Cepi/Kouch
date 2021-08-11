@@ -39,27 +39,33 @@ class CouchDbConnector(
     private val url = "${if (useHttps) "https" else "http"}://$host:$port/${database}"
 
     override suspend fun get(route: String, builder: RequestBuilder): HttpResponse {
-        return client.get<HttpResponseData>(url + route, builder).let {
-            HttpResponse(it.bodyString, it, moshi)
-        }
+        return client.get<HttpResponseData>(url + route) {
+            apply(builder)
+            addCouchHeaders()
+        }.let { HttpResponse(it.bodyString, it, moshi) }
     }
 
     override suspend fun put(route: String, payload: JSONObject, builder: RequestBuilder): HttpResponse {
         return client.put<HttpResponseData>(url + route) {
-            builder(this)
+            apply(builder)
+            addCouchHeaders()
             body = payload
         }.let { HttpResponse(it.bodyString, it, moshi) }
     }
 
     override suspend fun post(route: String, payload: JSONObject, builder: RequestBuilder): HttpResponse {
         return client.post(url + route) {
-            builder(this)
+            apply(builder)
+            addCouchHeaders()
             body = payload
         }
     }
 
     override suspend fun delete(route: String, builder: RequestBuilder): HttpResponse {
-        return client.delete(url + route, builder)
+        return client.delete<HttpResponseData>(url + route) {
+            apply(builder)
+            addCouchHeaders()
+        }.let { HttpResponse(it.bodyString, it, moshi) }
     }
 
     @Throws(HttpAuthenticationException::class)
@@ -88,6 +94,13 @@ class CouchDbConnector(
             val database = requireNotNull(this.database)
             val host = requireNotNull(host)
             return CouchDbConnector(database, host, port, useHttps, useHttp2, followRedirects, moshi)
+        }
+    }
+
+    companion object {
+        fun HttpRequestBuilder.addCouchHeaders() = headers {
+            append("Accept", "application/json")
+            append("Content-type", "application/json")
         }
     }
 }
