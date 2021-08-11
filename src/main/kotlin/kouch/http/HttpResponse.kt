@@ -16,8 +16,11 @@ class HttpResponse(
     val responseData: HttpResponseData,
     private val parser: Moshi = Moshi
     ) {
-    private val rawJson = JSONObject(bodyString)
-    val ok = rawJson.getBoolean("ok")
+
+    val json = JSONObject(bodyString)
+
+    val ok = try { json.getBoolean("ok") } catch (e: JSONException) { false }
+    val error = try { json.getString("error") } catch (e: JSONException) { null }
 
     fun <T : Any> parse(klass: KClass<T>): T? {
         return parser.adapter(klass.java).fromJson(bodyString)
