@@ -1,9 +1,6 @@
 package kouch.http
 
-import io.ktor.client.*
 import io.ktor.client.request.*
-import io.ktor.http.*
-import kouch.http.auth.AuthToken
 import org.json.JSONObject
 
 interface HttpHandler {
