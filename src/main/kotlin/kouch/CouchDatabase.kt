@@ -3,6 +3,9 @@ package kouch
 import io.ktor.client.*
 import io.ktor.client.engine.java.*
 import io.ktor.http.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import kouch.annotations.KouchDsl
 import kouch.http.*
 import org.json.JSONObject
@@ -13,6 +16,8 @@ open class CouchDatabase(
     username: String,
     password: String
 ) : HttpHandler by connector {
+    private val scope = MainScope()
+
     @KouchDsl
     class Builder {
         var dbName: String? = null
@@ -30,6 +35,13 @@ open class CouchDatabase(
             val password = requireNotNull(this.password)
 
             return CouchDatabase(name, connector, username, password)
+        }
+    }
+
+    init {
+        scope.launch {
+            authenticate(username, password)
+            post("", JSONObject())
         }
     }
 }

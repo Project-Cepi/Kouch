@@ -11,7 +11,6 @@ import kouch.annotations.KouchDsl
 import kouch.http.exceptions.HttpAuthenticationException
 import kouch.http.exceptions.HttpStatusException
 import org.json.JSONObject
-import kotlin.jvm.Throws
 
 class CouchDbConnector(
     database: String,
