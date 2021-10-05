@@ -18,10 +18,11 @@ dependencies {
 
     implementation("org.jetbrains.kotlinx", "kotlinx-coroutines-core", "1.5.2")
 
-    implementation("com.squareup.moshi", "moshi", "1.12.0")
-    implementation("com.squareup.moshi", "moshi-kotlin", "1.12.0")
-    implementation("com.squareup.moshi", "moshi-kotlin-codegen", "1.12.0")
-    implementation("org.json", "json", "20210307")
+    implementation(platform("org.http4k:http4k-bom:4.14.0.0"))
+    implementation("org.http4k", "http4k-core")
+    implementation("org.http4k", "http4k-client-okhttp")
+
+    implementation("org.http4k", "http4k-format-klaxon")
 }
 
 tasks.withType<KotlinCompile>() {
