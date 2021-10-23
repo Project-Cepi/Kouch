@@ -6,9 +6,7 @@ import org.http4k.core.HttpHandler
 import org.http4k.core.Uri
 
 class CouchServer(
-    url: Uri,
-    login: CouchUser,
-    handler: AsyncHttpHandler = OkHttp()
-): AsyncHttpHandler by handler {
-
-}
+    val baseUrl: Uri,
+    val login: CouchUser,
+    internal val handler: HttpHandler = OkHttp()
+)

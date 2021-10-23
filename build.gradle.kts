@@ -22,7 +22,7 @@ dependencies {
     implementation("org.http4k", "http4k-core")
     implementation("org.http4k", "http4k-client-okhttp")
 
-    implementation("org.http4k", "http4k-format-klaxon")
+    implementation("org.http4k", "http4k-format-kotlinx-serialization")
 }
 
 tasks.withType<KotlinCompile>() {
